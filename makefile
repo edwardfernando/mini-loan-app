@@ -1,3 +1,6 @@
+run:
+	php artisan serve
+
 clear.config:
 	php artisan config:clear
 
@@ -9,6 +12,9 @@ docker.stop:
 
 migrate.db:
 	php artisan migrate
+
+migrate.reset:
+	php artisan migrate:reset
 
 test.migrate.db:
 	php artisan migrate --env=testing

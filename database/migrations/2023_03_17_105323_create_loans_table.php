@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount', 10, 2);
             $table->integer('term');
-            $table->integer('state');
+            $table->string('state');
             $table->timestamps();
         });
     }
