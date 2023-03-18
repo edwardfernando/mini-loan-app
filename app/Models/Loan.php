@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Loan extends Model
 {
+    protected $fillable = ['amount', 'term', 'state'];
+
     use HasFactory;
 
     public function scheduledRepayments()

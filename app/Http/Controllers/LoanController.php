@@ -68,9 +68,13 @@ class LoanController extends Controller
                 'message' => 'Loan not found'
             ], 404);
         }
-        $loan->amount = $request->input('amount');
-        $loan->term = $request->input('term');
-        $loan->state = $request->input('state');
+
+        $loan->fill($request->only([
+            'amount',
+            'term',
+            'state'
+        ]));
+
         $loan->save();
         return response()->json([
             'status' => 'success',
