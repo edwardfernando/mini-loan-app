@@ -12,7 +12,7 @@ class ScheduledRepaymentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testScheduledRepaymentCanBeCreate()
+    public function testScheduledRepaymentCanBeCreated()
     {
         $loan = new Loan();
         $loan->amount = 10000;

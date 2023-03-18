@@ -13,7 +13,7 @@ class RepaymentTest extends TestCase
 {
     use RefreshDatabase;
     
-    public function testRepaymentCanBeCreate()
+    public function testRepaymentCanBeCreated()
     {
         $loan = new Loan();
         $loan->amount = 10000;
