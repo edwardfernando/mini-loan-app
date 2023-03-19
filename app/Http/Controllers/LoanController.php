@@ -28,6 +28,8 @@ class LoanController extends Controller
                 'message' => 'Loan not found'
             ], 404);
         }
+
+        $loan->load('scheduledRepayments');
         return response()->json([
             'status' => 'success',
             'data' => $loan
@@ -66,8 +68,7 @@ class LoanController extends Controller
             $dueDate->addWeek();
         }
 
-        $loan->load('scheduledRepayments');
-        
+        $loan->load('scheduledRepayments');    
         return response()->json([
             'status' => 'success',
             'data' => $loan
