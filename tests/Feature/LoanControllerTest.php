@@ -64,7 +64,7 @@ class LoanControllerTest extends TestCase
     {
       $data = [
         'amount' => 10000,
-        'term' => 3,
+        'term' => 2,
         'state' => 'PENDING'
       ];
 
@@ -74,8 +74,12 @@ class LoanControllerTest extends TestCase
           'status' => 'success',
           'data' => [
             'amount' => 10000,
-            'term' => 3,
-            'state' => 'PENDING'
+            'term' => 2,
+            'state' => 'PENDING',
+            'scheduled_repayments' => array( 
+              0 => array ('loan_id' => 1, 'amount' => 5000, 'state' => 'PENDING'),
+              1 => array ('loan_id' => 1, 'amount' => 5000, 'state' => 'PENDING')
+              )
           ]
           ]);
     }

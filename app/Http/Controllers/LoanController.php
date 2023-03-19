@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
+use App\Models\ScheduledRepayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -52,6 +53,20 @@ class LoanController extends Controller
         $loan->term = $request->input('term');
         $loan->state = 'PENDING';
         $loan->save();
+
+        $dueDate = now()->addWeek();
+        $repaymentAmount = $loan->amount / $loan->term;
+        for($i = 1; $i <= $loan->term; $i++) {
+            ScheduledRepayment::Create([
+                'loan_id' => $loan->id,
+                'due_date' => $dueDate,
+                'amount' => $repaymentAmount,
+                'state' => 'PENDING'
+            ]);
+            $dueDate->addWeek();
+        }
+
+        $loan->load('scheduledRepayments');
         
         return response()->json([
             'status' => 'success',

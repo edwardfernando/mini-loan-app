@@ -13,7 +13,7 @@ class Loan extends Model
 
     public function scheduledRepayments()
     {
-        return $this->hasMany(ScheduledRepayments::class);
+        return $this->hasMany(ScheduledRepayment::class);
     }
 }
 
