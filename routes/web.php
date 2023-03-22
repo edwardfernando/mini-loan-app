@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\RepaymentController;
-
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,8 @@ Route::put('/loans/{id}', [LoanController::class, 'update']);
 Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
 
 Route::post('/repayments', [RepaymentController::class, 'store']);
+
+
+
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/login', [LoginController::class, 'login']);
