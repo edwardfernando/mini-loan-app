@@ -27,7 +27,7 @@ Route::post('/loans', [LoanController::class, 'store']);
 Route::put('/loans/{id}', [LoanController::class, 'update']);
 Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
 
-Route::post('/repayments', [RepaymentController::class, 'store']);
+Route::post('/repayments', [RepaymentController::class, 'store'])->middleware('check_user_belongs_to_repayment');
 
 
 
