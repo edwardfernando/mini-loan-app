@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\RepaymentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/loans', [LoanController::class, 'index']);
+Route::get('/loans/{id}', [LoanController::class, 'show']);
+Route::post('/loans', [LoanController::class, 'store']);
+Route::put('/loans/{id}', [LoanController::class, 'update']);
+Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
+
+Route::post('/repayments', [RepaymentController::class, 'store']);
