@@ -50,7 +50,10 @@ class LoanController extends Controller
             ], 422);
         }
 
+        $user = $request->user();
+
         $loan = new Loan();
+        $loan->user_id = $user->id;
         $loan->amount = $request->input('amount');
         $loan->term = $request->input('term');
         $loan->state = 'PENDING';
@@ -111,6 +114,31 @@ class LoanController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Loan deleted successfully'
+        ]);
+    }
+
+    public function approve($id)
+    {
+        $loan = Loan::find($id);
+        if (!$loan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Loan not found'
+            ], 404);
+        }
+
+        if($loan->state == 'APPROVED') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Loan has been approved'
+            ], 422);
+        }
+
+        $loan->state='APPROVED';
+        $loan->save();
+        return response()->json([
+            'status' => 'success',
+            'data' => $loan
         ]);
     }
 }
