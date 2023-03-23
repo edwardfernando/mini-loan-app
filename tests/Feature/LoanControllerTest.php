@@ -3,13 +3,16 @@
 namespace Tests\Feature;
 
 use App\Models\Loan;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LoanControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use WithoutMiddleware;
 
     public function test_index_success_returns_all_loans()
     {
@@ -62,6 +65,9 @@ class LoanControllerTest extends TestCase
 
     public function test_store_success_create_new_loan()
     {
+      $user = User::factory()->create();
+      $this->actingAs($user);
+
       $data = [
         'amount' => 10000,
         'term' => 2,
@@ -178,5 +184,12 @@ class LoanControllerTest extends TestCase
         'status' => 'error',
         'message' => 'Loan not found'
         ]);
+    }
+
+    public function test_approve_success_existing_loan()
+    {
+      $loan = Loan::factory()->create();
+      $response = $this->json('PUT', '/loans/' . $loan->id . '/approve');
+      $response->assertStatus(200);
     }
 }

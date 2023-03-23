@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Loan;
+use App\Models\User;
 
 class LoanTest extends TestCase
 {
@@ -13,6 +14,7 @@ class LoanTest extends TestCase
     public function testLoanCanBeCreated()
     {
         $loan = new Loan();
+        $loan->user_id = User::factory()->create()->id;
         $loan->amount = 10000;
         $loan->term = 3;
         $loan->state = 'PENDING';

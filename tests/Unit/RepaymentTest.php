@@ -8,6 +8,7 @@ use App\Models\Repayment;
 use App\Models\ScheduledRepayment;
 use App\Models\Loan;
 use Carbon\Carbon;
+use App\Models\User;
 
 class RepaymentTest extends TestCase
 {
@@ -16,6 +17,7 @@ class RepaymentTest extends TestCase
     public function testRepaymentCanBeCreated()
     {
         $loan = new Loan();
+        $loan->user_id = User::factory()->create()->id;
         $loan->amount = 10000;
         $loan->term = 3;
         $loan->state = 'PENDING';
