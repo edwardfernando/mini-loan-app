@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ScheduledRepayment;
 use Illuminate\Support\Facades\Auth;
 
-class CheckUserBelongsToRepayment
+class OnlyAdmin
 {
     public function handle(Request $request, Closure $next)
     {    
@@ -15,12 +15,8 @@ class CheckUserBelongsToRepayment
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $scheduledRepayment = ScheduledRepayment::findOrFail($request->scheduled_repayment_id);
-        if($request->user()->id !== $scheduledRepayment->loan->user_id) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You are not authorized to perform this action'
-            ], 401);
+        if($request->user()->role !== 'admin') {
+          return response()->json(['error' => 'Only user with admin role can perform this action'], 401);
         }
 
         return $next($request);
