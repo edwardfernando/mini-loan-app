@@ -29,7 +29,6 @@ Route::middleware(['check_logged_in'])->group(function () {
 Route::middleware(['only_admin'])->group(function() {
   Route::get('loans', [LoanController::class, 'index']);
   Route::get('loans/{id}', [LoanController::class, 'show']);
-  Route::put('loans/{id}', [LoanController::class, 'update']);
   Route::delete('loans/{id}', [LoanController::class, 'destroy']);
   Route::put('loans/{id}/approve', [LoanController::class, 'approve']);
 });

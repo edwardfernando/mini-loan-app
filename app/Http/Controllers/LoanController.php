@@ -78,29 +78,6 @@ class LoanController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
-    {
-        $loan = Loan::find($id);
-        if(!$loan) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Loan not found'
-            ], 404);
-        }
-
-        $loan->fill($request->only([
-            'amount',
-            'term',
-            'state'
-        ]));
-
-        $loan->save();
-        return response()->json([
-            'status' => 'success',
-            'data' => $loan
-        ]);
-    }
-
     public function destroy($id)
     {
         $loan = Loan::find($id);

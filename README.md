@@ -1,66 +1,294 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Mini-Aspire API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This API allows authenticated users to go through a loan application, submit the weekly loan repayments, and view their own loans.
 
-## About Laravel
+## Table of Contents
+1. [Routes](#routes)
+2. [Loan Routes](#loan-routes)
+3. [Repayment Routes](#repayment-routes)
+4. [Authentication Routes](#authentication-routes)
+5. [Middleware](#middleware)
+6. [Makefile](#makefile)
+7. [API Documentation](#api-documentation)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Routes
+All routes except for the authentication routes require users to be authenticated and logged in.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Loan Routes
+- POST /loans: Allows customers to create a loan request by defining the loan amount and term. Upon submission, the system will generate three scheduled repayments based on a weekly repayment frequency. The loan and scheduled repayments will have a status of "PENDING".
+- GET /loans: Allows admins to view a list of all loan requests. Only admins can access this route.
+- GET /loans/{id}: Allows admins to view the details of a specific loan request. Only admins can access this route.
+- PUT /loans/{id}: Allows admins to update the details of a specific loan request. Only admins can access this route.
+- DELETE /loans/{id}: Allows admins to delete a specific loan request. Only admins can access this route.
+- PUT /loans/{id}/approve: Allows admins to approve a specific loan request, changing its status from "PENDING" to "APPROVED". Only admins can access this route.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Repayment Routes
+- POST /repayments: Allows customers to add a repayment with an amount greater than or equal to the scheduled repayment. Upon submission, the scheduled repayment status will change to "PAID". If all scheduled repayments connected to a loan are "PAID", the loan status will also change to "PAID".
 
-## Learning Laravel
+## Authentication Routes
+- POST /register: Allows users to register a new account by providing their name, email, and password.
+- POST /login: Allows users to log in by providing their email and password.
+- POST /logout: Allows users to log out.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Middleware
+The following middleware are used to protect the routes:
+- check_logged_in: Checks if the user is authenticated and logged in.
+- only_admin: Checks if the user is an admin.
+- check_user_belongs_to_repayment: Checks if the user is the owner of the repayment.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Makefile
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This Makefile contains several targets to make it easier to manage and test a PHP Laravel application. 
 
-## Laravel Sponsors
+### Targets:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- `run`: Runs the Laravel application using the built-in PHP development server via `php artisan serve`.
+- `clear.config`: Clears the configuration cache.
+- `docker.start`: Starts the Docker environment using Docker Compose via `docker-compose up -d`.
+- `docker.stop`: Stops the Docker environment via `docker-compose down`.
+- `migrate.seed`: Seeds the database via `php artisan db:seed`.
+- `migrate.db`: Runs database migrations via `php artisan migrate`.
+- `migrate.reset`: Rolls back all database migrations via `php artisan migrate:reset`.
+- `test.migrate.db`: Runs database migrations for the testing environment via `php artisan migrate --env=testing`.
+- `test`: Runs tests via `php artisan test --env=testing`.
+- `test.migrate.reset`: Rolls back all database migrations for the testing environment via `php artisan migrate:reset --env=testing`.
 
-### Premium Partners
+## API Documentation
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### GET `/loans`
 
-## Contributing
+```
+Payload: {}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+Status: 200 OK
+  {
+      "status": "success",
+      "data": [
+          {
+              "id": 1,
+              "user_id": 1,
+              "amount": 1000,
+              "term": 12,
+              "state": "APPROVED",
+              "created_at": "2022-02-25T05:56:29.000000Z",
+              "updated_at": "2022-02-25T05:56:29.000000Z"
+          },
+          {
+              "id": 2,
+              "user_id": 1,
+              "amount": 5000,
+              "term": 24,
+              "state": "PENDING",
+              "created_at": "2022-02-25T06:07:17.000000Z",
+              "updated_at": "2022-02-25T06:07:17.000000Z"
+          }
+      ]
+  }
 
-## Code of Conduct
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Returns a list of all loans. Each loan object has the following properties:
 
-## Security Vulnerabilities
+- id: unique identifier for the loan (integer)
+- user_id: the ID of the user who requested the loan (integer)
+- amount: the amount of the loan (decimal, 10 digits including 2 decimal places)
+- term: the term of the loan in months (integer)
+- state: the state of the loan, can be "PENDING", "APPROVED" (string)
+- created_at: the date and time the loan was created (string)
+- updated_at: the date and time the loan was last updated (string)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### GET `/loans/{id}`
 
-## License
+```
+Payload: {}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+Status: 200 OK - Returns an instance of loan based on the given ID.
+  {
+    "status": "success",
+    "data": {
+        "id": 2,
+        "user_id": 1,
+        "amount": "10.00",
+        "term": 2,
+        "state": "APPROVED",
+        "created_at": "2023-03-23T12:15:52.000000Z",
+        "updated_at": "2023-03-23T12:21:53.000000Z",
+        "scheduled_repayments": [
+            {
+                "id": 4,
+                "loan_id": 2,
+                "due_date": "2023-04-06",
+                "amount": "5.00",
+                "state": "PENDING",
+                "created_at": "2023-03-23T12:15:53.000000lZ",
+                "updated_at": "2023-03-23T12:15:53.000000Z"
+            },
+            {
+                "id": 3,
+                "loan_id": 2,
+                "due_date": "2023-03-30",
+                "amount": "5.00",
+                "state": "PAID",
+                "created_at": "2023-03-23T12:15:53.000000Z",
+                "updated_at": "2023-03-23T12:22:50.000000Z"
+            }
+        ]
+    }
+  }
+
+```
+
+
+```
+Status: 404 Not Found - Returns 404 when the given ID is non existance. 
+
+  {
+     "status": "error",
+      "message": "Loan not found"
+  }
+
+```
+
+
+### POST `/loans`
+
+```
+Payload: { "amount": "", "term": "2" }
+```
+
+> amount (required): The amount of the loan
+>
+> term (required): The term of the loan in weeks
+
+```
+Status: 201 Created - Returns an instance of the created loan with the scheduled payment breakdown
+  {
+    "status": "success",
+    "data": {
+        "user_id": 1,
+        "amount": "2000",
+        "term": 3,
+        "state": "PENDING",
+        "updated_at": "2023-03-24T06:47:01.000000Z",
+        "created_at": "2023-03-24T06:47:01.000000Z",
+        "id": 9,
+        "scheduled_repayments": [
+            {
+                "id": 25,
+                "loan_id": 9,
+                "due_date": "2023-03-31",
+                "amount": "666.67",
+                "state": "PENDING",
+                "created_at": "2023-03-24T06:47:01.000000Z",
+                "updated_at": "2023-03-24T06:47:01.000000Z"
+            },
+            {
+                "id": 26,
+                "loan_id": 9,
+                "due_date": "2023-04-07",
+                "amount": "666.67",
+                "state": "PENDING",
+                "created_at": "2023-03-24T06:47:01.000000Z",
+                "updated_at": "2023-03-24T06:47:01.000000Z"
+            },
+            {
+                "id": 27,
+                "loan_id": 9,
+                "due_date": "2023-04-14",
+                "amount": "666.67",
+                "state": "PENDING",
+                "created_at": "2023-03-24T06:47:01.000000Z",
+                "updated_at": "2023-03-24T06:47:01.000000Z"
+            }
+        ]
+    }
+  }
+```
+```
+Status: 422 Unprocessable Content
+
+  {
+      "status": "error",
+      "message": {
+          "amount": [
+              "The amount field is required."
+          ]
+      }
+  }
+```
+
+### PUT `/loans/{id}/approve`
+
+```
+Payload: {}
+```
+
+```
+Status: 200 OK - Returns an updated loan with state APPROVED
+  {
+      "status": "success",
+      "data": {
+          "id": 11,
+          "user_id": 1,
+          "amount": "5000.00",
+          "term": 2,
+          "state": "APPROVED",
+          "created_at": "2023-03-24T12:47:26.000000Z",
+          "updated_at": "2023-03-24T12:47:57.000000Z"
+      }
+  }
+```
+
+```
+Status: 404 Not Found - Returns 404 when the given ID is non existance. 
+
+  {
+     "status": "error",
+      "message": "Loan not found"
+  }
+```
+
+### POST `/repayments/{id}`
+
+```
+{"scheduled_repayment_id": "30", "amount":2000}
+```
+
+```
+Status: 200 OK - Success create a repayment for scheduled_repayment. If the repayment amount is less than the total scheduled_repayment, it'll update the status to 'PARTIAL', else 'PAID'
+  {
+      "status": "success",
+      "data": {
+          "scheduled_repayment_id": "30",
+          "amount": 2000,
+          "updated_at": "2023-03-24T12:51:29.000000Z",
+          "created_at": "2023-03-24T12:51:29.000000Z",
+          "id": 5
+      }
+  }
+```
+```
+Status: 422 - When total repayment amount greater than the scheduled repayment amount
+  {
+      "status": "error",
+      "message": "The repayment amount cannot be greater than the scheduled repayment amount."
+  }
+```
+```
+Status: 422 - When the scheduled repayment has been fully paid
+  {
+      "status": "error",
+      "message": "The scheduled repayment has been fully paid."
+  }
+```
+```
+Status: 422 - When the loan of the scheduled_repayment is not approved
+  {
+      "status": "error",
+      "message": "Can not make repayment. Your loan has not been approved."
+  }
+```
