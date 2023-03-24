@@ -2,6 +2,21 @@
 
 This API allows authenticated users to go through a loan application, submit the weekly loan repayments, and view their own loans.
 
+## Prerequisites
+1. Docker installed
+2. PHP version 8.1 or greater
+3. `make` installed on your machine (mac: https://formulae.brew.sh/formula/make, ubuntu: https://linuxhint.com/install-make-ubuntu/)
+
+## How to run
+1. `make docker.start` 
+2. `make migrate.db`
+3. `make migrate.seed`
+4. `make run`
+5. (Optional) To run all test: `make test`
+
+You can access your app from `localhost:8000`
+
+
 ## Table of Contents
 1. [Routes](#routes)
 2. [Loan Routes](#loan-routes)
@@ -255,7 +270,7 @@ Status: 404 Not Found - Returns 404 when the given ID is non existance.
 ### POST `/repayments/{id}`
 
 ```
-{"scheduled_repayment_id": "30", "amount":2000}
+Payload: {"scheduled_repayment_id": "30", "amount":2000}
 ```
 
 ```
@@ -290,5 +305,76 @@ Status: 422 - When the loan of the scheduled_repayment is not approved
   {
       "status": "error",
       "message": "Can not make repayment. Your loan has not been approved."
+  }
+```
+
+### Register `/register`
+
+```
+Payload: {"email": "edward.fer@gmail.com", "password":"password", "c_password": "password", "name": "edward"}
+```
+```
+Status: 200 - Success register new user
+{
+    "status": "success",
+    "message": "user register successfully"
+}
+```
+
+```
+Status: 422 - When the email has already been taken
+  {
+      "status": "error",
+      "message": {
+          "email": [
+              "The email has already been taken."
+          ]
+      }
+  }
+```
+
+```
+Status: 422 - When the password and c_password don't match
+  {
+      "status": "error",
+      "message": {
+          "c_password": [
+              "The c password field must match password."
+          ]
+      }
+  }
+```
+
+### Login `/login`
+```
+Payload: {"email": "admin@admin.com", "password":"admin123"}
+```
+```
+Status: 200 - When the user and credentials are matched
+  {
+      "status": "success",
+      "message": "user login successfully",
+      "data": {
+          "token": "14|kc0nUWuiEDkS6Kv27Jn6trBj3uxMqu9KIkmawToY",
+          "name": "Admin"
+      }
+  }
+```
+```
+Status: 422 - When the credentials are invalid
+  {
+      "status": "error",
+      "message": "Unauthorised"
+  }
+```
+
+### Logout `/logout`
+```
+Payload: {}
+```
+```
+Status: 200 - Success logout
+  {
+      "message": "Logged out successfully"
   }
 ```
