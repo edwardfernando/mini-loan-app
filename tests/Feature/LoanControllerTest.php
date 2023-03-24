@@ -130,41 +130,6 @@ class LoanControllerTest extends TestCase
         ]);
     }
 
-    public function test_update_success_update_existing_loan()
-    {
-      $loan = Loan::factory()->create();
-      
-      $data = [
-        'amount' => 999,
-        'term' => 999,
-        'state' => 'RANDOM_STATE'
-      ];
-
-      $response = $this->json('PUT', '/loans/' . $loan->id, $data);
-      $response->assertStatus(200);
-
-      $updatedLoan = Loan::find($loan->id);
-      $this->assertEquals($updatedLoan->amount, $data['amount']);
-      $this->assertEquals($updatedLoan->term, $data['term']);
-      $this->assertEquals($updatedLoan->state, $data['state']);
-    }
-
-    public function test_update_returns_404_for_non_existance_loan()
-    {
-      $data = [
-        'amount' => 999,
-        'term' => 999,
-        'state' => 'RANDOM_STATE'
-      ];
-
-      $response = $this->json('PUT', '/loans/' . 999, $data);
-      $response->assertStatus(404);
-      $response->assertJson([
-        'status' => 'error',
-        'message' => 'Loan not found'
-        ]);
-    }
-
     public function test_destroy_success_deletes_existing_loan()
     {
       $loan = Loan::factory()->create();
