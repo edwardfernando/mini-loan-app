@@ -24,6 +24,13 @@ class RepaymentController extends Controller
         }
 
         $scheduledRepayment = ScheduledRepayment::find($request->input('scheduled_repayment_id'));
+
+        if($scheduledRepayment->loan->state == 'PENDING') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Can not make repayment. Your loan has not been approved.',
+            ], 422);
+        }
         
         if ($scheduledRepayment->state == 'PAID') {
             return response()->json([

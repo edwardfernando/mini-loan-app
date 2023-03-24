@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\Loan;
+use App\Models\User;
 use App\Models\ScheduledRepayment;
 use Carbon\Carbon;
 
@@ -15,6 +16,7 @@ class ScheduledRepaymentTest extends TestCase
     public function testScheduledRepaymentCanBeCreated()
     {
         $loan = new Loan();
+        $loan->user_id = User::factory()->create()->id;
         $loan->amount = 10000;
         $loan->term = 3;
         $loan->state = 'PENDING';

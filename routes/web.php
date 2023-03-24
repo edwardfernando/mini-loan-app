@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\RepaymentController;
-
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +21,22 @@ use App\Http\Controllers\RepaymentController;
 //     return view('welcome');
 // });
 
-Route::get('/loans', [LoanController::class, 'index']);
-Route::get('/loans/{id}', [LoanController::class, 'show']);
-Route::post('/loans', [LoanController::class, 'store']);
-Route::put('/loans/{id}', [LoanController::class, 'update']);
-Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
 
-Route::post('/repayments', [RepaymentController::class, 'store']);
+Route::middleware(['check_logged_in'])->group(function () {
+  Route::post('/loans', [LoanController::class, 'store']);
+});
+
+Route::middleware(['only_admin'])->group(function() {
+  Route::get('/loans', [LoanController::class, 'index']);
+  Route::get('/loans/{id}', [LoanController::class, 'show']);
+  Route::put('/loans/{id}', [LoanController::class, 'update']);
+  Route::delete('/loans/{id}', [LoanController::class, 'destroy']);
+  Route::put('/loans/{id}/approve', [LoanController::class, 'approve']);
+});
+
+
+Route::post('/repayments', [RepaymentController::class, 'store'])->middleware('check_user_belongs_to_repayment');
+
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout']);

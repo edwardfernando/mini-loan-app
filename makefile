@@ -10,6 +10,9 @@ docker.start:
 docker.stop:
 	docker-compose down
 
+migrate.seed:
+	php artisan db:seed
+
 migrate.db:
 	php artisan migrate
 
